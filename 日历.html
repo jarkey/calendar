@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    html,body{
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    #box {
+        height: 360px;
+        overflow: hidden;
+    }
+    ul{
+        list-style: none;
+    }
+    .header{
+        height: 40px;
+        background: rgba(0,0,0,0.3)
+    }
+    .header ul{
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+    .header ul li{
+        flex: 1;
+        align-self: center;
+        text-align: center;
+    }
+    #dateWrap {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    #dateWrap li{
+        width: calc(100% / 7);
+        text-align: center;
+    }
+    .today{
+        background: skyblue;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <div class="header">
+            <ul>
+                <li>日</li>
+                <li>一</li>
+                <li>二</li>
+                <li>三</li>
+                <li>四</li>
+                <li>五</li>
+                <li>六</li>
+            </ul>
+        </div>
+        <div class="body">
+            <ul id="dateWrap">
+                
+            </ul>
+        </div>
+    </div>
+    <h2 id="dateStr"></h2>
+    <button id="next">next</button>
+    <button id="prev">prev</button>
+    <script>
+        class canladar {
+            constructor(y,m){
+                this.y = y || new Date().getFullYear();
+                this.m = m || new Date().getMonth();
+                this.currentD = new Date().getDate();
+                this.currentMon = new Date().getMonth();
+                this.dateWrap = document.querySelector('#dateWrap');
+                this.dateStr = document.querySelector('#dateStr');
+                this.next = document.querySelector('#next');
+                this.prev = document.querySelector('#prev');
+                this.init()
+            }
+            init(){
+                let _this=this;
+                this.render();
+                this.next.onclick=function(){
+                    _this.nextFn(_this)
+                };
+                this.prev.onclick=function(){
+                    _this.prevFn(_this)
+                };
+
+            }
+            // 获取1号是周几
+            getFirstDay(){ 
+                var firstDay = new Date(this.y,this.m,1).getDay();
+                return firstDay;
+            }
+            prevFn(_this){
+                _this.m--;
+                if(_this.m<0){
+                    _this.m = 11;
+                    _this.y--;
+                }
+                _this.render()
+            }
+            nextFn(_this){
+                _this.m++;
+                if(_this.m > 11){
+                    _this.m -= 12;
+                    _this.y ++;
+                }
+                _this.render()
+            }
+            render(){
+                let str = '';
+                let today='';
+                var d = this.getFirstDay();     // 第一天是周几
+                var dayNum = new Date(this.y,this.m+1,0).getDate();                                   // 共多少天
+                for(let i=0;i<d;i++){
+                    str+=`<li></li>`;
+                }
+                for(let i=0;i<dayNum;i++){
+                    today = (i===this.currentD && this.m === this.currentMon)? 'today':'';
+                    str+=`<li class="date ${today}">${i+1}</li>`;
+                }
+                dateWrap.innerHTML = str;
+                this.dateStr.innerHTML = this.y+'年'+(this.m+1)+'月';
+            }
+        }
+        new canladar();
+    </script>
+</body>
+
+</html>
